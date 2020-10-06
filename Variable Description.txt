@@ -1,0 +1,59 @@
+This description is based on the discussion forum on Kaggle written by the host and other participants.
+url: https://www.kaggle.com/c/ieee-fraud-detection/discussion/101203
+
+<Transaction Table>
+TransactionDT: 
+timedelta from a given reference datetime (not an actual timestamp). The unit is in seconds. The data spans 6 months(86400 seconds(day 1) ~ 15811131 seconds(day 183))
+
+TransactionAMT: 
+transaction payment amount in USD. Some are Foreign Currency translated into USD so there could be more than 2 decimal places.
+
+dist: 
+distance between (not limited) billing address, mailing address, zip code, IP address, phone area, etc
+    
+C1-C14: 
+counting, such as how many addresses are found to be associated with the payment card, etc. The actual meaning is masked. e.g) phone numbers, email addresses, names associated with the user plus like device, ipaddr, billingaddr, etc. These are for both purchaser and recipient which doubles the number.
+
+D1-D15: 
+timedelta, such as days between previous transaction, etc.
+
+Vxxx: 
+Vesta engineered rich features, including ranking, counting, and other entity relations. e.g) how many times the payment card associated with an IP and email or address appeared in 24 hours time range, etc. Some of them are count of orders within a clustering, a time-period or condition, so the value is finite and has ordering(or ranking)
+
+* Categorical
+ProductCD: 
+product/service code, the product/service for each transaction
+
+addr1, addr2: 
+addresses for purchaser. addr1 as billing region, addr2 as billing country.
+
+card1, 2, 3, 5: 
+payment card information, such as card type, card category, issue bank, country, etc.
+    card4: card company e.g) 'visa', 'mastercard', 'american express', 'discover'
+    card6: debit/credit/etc
+    
+Pemaildomain, Remaildomain: 
+purchaser and recipient email domain(certain transaction don't need recipient, so Remaildomain is null.)
+
+M1-M9: 
+match, such as names on card and address, etc. <== This became binary(numeric) variables (1 = True, 0 = False) during cleaning process in this project.
+
+
+<Identity Table>
+
+They're collected by Vesta’s fraud protection system and digital security partners.
+
+* Numerical
+id01-id11: 
+numerical features for identity, which is collected by Vesta and security partners such as device rating, ip_domain rating, proxy rating, etc. Also it recorded behavioral fingerprint like account login times/failed to login times, how long an account stayed on the page, etc. All of these are not able to elaborate due to security partner T&C. 
+
+* Categorical
+DeviceType
+DeviceInfo
+id12-id38
+
+
+<Labeling logic>
+
+"The logic of our labeling is define reported chargeback on the card as fraud transaction (isFraud=1) and transactions posterior to it with either user account, email address or billing address directly linked to these attributes as fraud too. If none of above is reported and found beyond 120 days, then we define as legit transaction (isFraud=0).
+However, in real world fraudulent activity might not be reported, e.g. cardholder was unaware, or forgot to report in time and beyond the claim period, etc. In such cases, supposed fraud might be labeled as legit, but we never could know of them. Thus, we think they're unusual cases and negligible portion." 
